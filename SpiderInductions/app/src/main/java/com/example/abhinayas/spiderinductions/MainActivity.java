@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
    // EditText rollno = (EditText) findViewById(R.id.rollno);
     //Spinner dept=(Spinner)findViewById(R.id.spinner) ;
     String Username,User_rollno,Userdept,passovertext;
+   private CheckBox checkBox1;
+   private CheckBox checkBox2 ;
+   private CheckBox checkBox3 ;
+  private CheckBox checkBox4 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +55,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
    // public Button button=(Button)findViewById(R.id.button);
 
         public void showNextActivity(View v){
             EditText name = (EditText) findViewById(R.id.name);
             EditText rollno = (EditText) findViewById(R.id.rollno);
             Spinner dept=(Spinner)findViewById(R.id.spinner) ;
+             checkBox1 = (CheckBox) findViewById(R.id.checkBox);
+             checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+             checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+             checkBox4 = (CheckBox) findViewById(R.id.checkBox4);
 
 
             Username = name.getText().toString();
@@ -74,7 +84,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this,"Select your department",Toast.LENGTH_LONG).show();
                 return;
             }
+            else if (( checkBox1.isChecked() == false) && ( checkBox2.isChecked() == false) && ( checkBox3.isChecked() == false) && ( checkBox4.isChecked() == false)){
+                Toast.makeText(this,"Please select a profile",Toast.LENGTH_LONG).show();
+                return;
+            }
             else{
+
                 Toast.makeText(this,"Redirecting",Toast.LENGTH_LONG).show();
 
             }

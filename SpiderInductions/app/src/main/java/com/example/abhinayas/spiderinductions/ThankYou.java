@@ -23,7 +23,7 @@ public class ThankYou extends AppCompatActivity {
         regards.append(greeting);
       //  regards.setText(greeting);
         TextView timestamp= (TextView) findViewById(R.id.timestamp);
-        Long timStamp = System.currentTimeMillis()/1000;
+        Long timStamp = System.currentTimeMillis();
         String ts =timStamp.toString();
         timestamp.append(ts);
 
