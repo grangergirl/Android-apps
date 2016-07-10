@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,7 +78,7 @@ public String title=null;
 
 
                Toast.makeText(MainActivity.this, "searching for "+searchText, Toast.LENGTH_SHORT).show();
-               ArrayList<String> foundData = null;
+               ArrayList<String> foundData = new ArrayList<String>();
 
                 while(i<=infoIndex) {
                     String string=collected_data.get(i);
@@ -90,7 +91,7 @@ public String title=null;
 
                 }
                 searchText=null;
-                Intent in=new Intent(MainActivity.this,SearchPage.class);
+              Intent in=new Intent(MainActivity.this,SearchPage.class);
                 //in.putExtra("found",string);
                 in.putStringArrayListExtra("found",foundData);
                 startActivity(in);

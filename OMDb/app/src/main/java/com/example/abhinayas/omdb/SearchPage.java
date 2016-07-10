@@ -32,11 +32,11 @@ public class SearchPage extends AppCompatActivity{
         listView.setAdapter(adapter);
         Bundle datums = getIntent().getExtras();
         if (datums != null) {
-            ArrayList<String> foundData = new ArrayList<String>();
 
-            foundData=datums.getStringArrayList("found");
+
+            ArrayList<String> foundData =datums.getStringArrayList("found");
             int i=0;
-            while(i<=foundData.lastIndexOf(foundData))
+            while(i<foundData.size())
             {
                 String s=foundData.get(i);
                 adapter.setNotifyOnChange(true);
