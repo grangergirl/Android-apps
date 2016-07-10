@@ -1,5 +1,10 @@
 package com.example.abhinayas.entertainment;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,7 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener  {
     public int currentimageindex=0;
     ImageView img;
     int period = 3000;
@@ -43,14 +48,19 @@ public class MainActivity extends AppCompatActivity {
     private float x1,x2;
     static final int MIN_DISTANCE = 150;
     public int startindex;
-
+    private SensorManager mSensorManager;
+    private Sensor mProximity;
+    private SensorEventListener listen;
     public int val;
+    public Button enable,disable,save;
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Toast.makeText(getApplicationContext(), "Closing app", Toast.LENGTH_SHORT).show();
-        mediaPlayer.stop();
-        mediaPlayer.reset();
+      //  mediaPlayer.stop();
+       // mediaPlayer.reset();
         onStop();
     }
 
@@ -123,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         timehandler=new Handler();
         swipehandler=new Handler();
 
+
+       // save=(Button)findViewById(R.id.bSave);
+       // title=(TextView)findViewById(R.id.tvTitlePU);
+       // count=(TextView)findViewById(R.id.tvCount);
+        disable.setEnabled(false);
+        //save.setEnabled(false);
+
         Button s=(Button)findViewById(R.id.start);
         s.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +151,32 @@ public class MainActivity extends AppCompatActivity {
         });
         play = (Button) findViewById(R.id.play);
         stop= (Button) findViewById(R.id.stop);
+        Button e=(Button)findViewById(R.id.enable);
+        Button d=(Button)findViewById(R.id.disable);
+        d.setEnabled(false);
+        e.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Button e=(Button)findViewById(R.id.enable);
+                Button d=(Button)findViewById(R.id.disable);
+                startCounter(v);
+                d.setEnabled(true);
+                e.setEnabled(false);
+
+            }
+        });
+        d.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Button e=(Button)findViewById(R.id.enable);
+                Button d=(Button)findViewById(R.id.disable);
+                stopCounter(v);
+                e.setEnabled(true);
+                d.setEnabled(false);
+                //stuff
+
+            }
+        });
 
 
 
@@ -149,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
                                        int pos, long id) {
 
                 val=pos;
-
                 if(val==0)
                     Toast.makeText(getApplicationContext(), "Choose a proper audio file", Toast.LENGTH_SHORT).show();
 
@@ -165,30 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-       /* Switch swipeswitch=(Switch)findViewById(R.id.switch1);
-        swipeswitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Switch swipeswitch=(Switch)findViewById(R.id.switch1);
-                if(swipeswitch.isChecked()==true)
-                {
-                    Button s=(Button)findViewById(R.id.start);
-                   if(s.isEnabled()==true)
-                   {
-                       Toast.makeText(MainActivity.this, "Swiping activated", Toast.LENGTH_SHORT).show ();
 
-
-
-
-                   }
-                    else if(s.isEnabled()==false)
-                   {
-                       Toast.makeText(MainActivity.this, "Swiping action disabled", Toast.LENGTH_SHORT).show ();
-                       swipeswitch.setChecked(false);
-                   }
-                }
-            }
-        });*/
 
         play.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,6 +241,77 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+      mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+    public void startCounter(View v) {
+        // TODO Auto-generated method stub
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        mSensorManager.registerListener(this, mProximity,SensorManager.SENSOR_DELAY_NORMAL);
+        disable.setEnabled(true);
+    }
+
+    public void stopCounter(View v) {
+        // TODO Auto-generated method stub
+        mSensorManager.unregisterListener(this);
+
+      //  save.setEnabled(true);
+    }
+
+    public void saveData(View v) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+
+
+   @Override
+    public void onSensorChanged(SensorEvent event) {
+       // ImageView img=(ImageView)findViewById(R.id.imageView);
+        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            if (event.values[0] == 0) {
+                //near
+                Toast.makeText(getApplicationContext(), "Air Swipe", Toast.LENGTH_SHORT).show();
+                img = (ImageView)findViewById(R.id.img);
+                if(currentimageindex<IMAGES.length-1) {
+                    currentimageindex++;
+                    img.setImageResource(IMAGES[currentimageindex]);
+                    Animation rotateimage = AnimationUtils.makeInAnimation(this, false);
+                    img.startAnimation(rotateimage);
+                }
+                else
+                { currentimageindex=0;
+                    img.setImageResource(IMAGES[currentimageindex]);
+                    Animation rotateimage = AnimationUtils.makeInAnimation(this, false);
+                    img.startAnimation(rotateimage);
+                }
+
+               // img.setImageResource(R.drawable.github);
+            } else {
+                //far
+                Toast.makeText(getApplicationContext(), "Picture updated", Toast.LENGTH_SHORT).show();
+               // img.setImageResource(R.drawable.facebook);
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
     public void playSong() {
         if(val==1)
         {
